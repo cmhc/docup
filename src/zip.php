@@ -35,6 +35,10 @@ class Zip
                             if (strpos($file, $suffix) !== false) {
                                 continue;
                             }
+                            echo $dir.$file;
+                            echo "\n";
+                            echo str_replace($archiveFolder, '', $dir.$file);
+                            echo "\n";
                             $zip->addFile($dir.$file, str_replace($archiveFolder, '', $dir.$file)); 
                         }
                     } elseif (is_dir($dir . $file)) {

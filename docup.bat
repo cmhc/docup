@@ -1,2 +1,2 @@
 @ECHO off
-php  %~dp0shell.php
+php  %~dp0docup.php
