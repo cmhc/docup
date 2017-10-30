@@ -26,7 +26,7 @@ class Protocol
      * @param  string $user 用户信息hash
      * @param  string $dir  本地路径
      */
-    public function upload($user)
+    public function upload()
     {
         $dir = getcwd();
         $zip = new \docup\Zip;
@@ -47,7 +47,9 @@ class Protocol
                 )
             ));
         $project = new \docup\Project();
-        $api = sprintf(trim($project->getServer(), '/') . '/docup.php?sid=%s&project=%s', $user, $project->getProjectName());
+        $user = new \docup\User();
+        $sid = $user->getSid();
+        $api = sprintf(trim($project->getServer(), '/') . '/docup.php?sid=%s&project=%s', $sid, $project->getProjectName());
         $res =  file_get_contents($api, null, $context);
         //清理文件
         @unlink($zipFile);

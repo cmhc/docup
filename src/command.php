@@ -18,17 +18,17 @@ class Command
         $this->project = new \docup\Project();
         $this->setServer();
         $this->user = new \docup\User();
-        if (!($info = $this->user->isLogin())) {
-            $info = $this->login();
+        if (!($this->user->isLogin())) {
+            $this->login();
         }
-        $this->upload($info);
+        $this->upload();
     }
 
     /**
      * 上传控制
      * @param  string $info 用户信息
      */
-    public function upload($info)
+    public function upload()
     {
         $this->setProject();
         echo "Current directory is " . getcwd() . ", upload? [Y/N]\n";
@@ -37,7 +37,7 @@ class Command
             return false;
         }
         $protocol = new \docup\Protocol();
-        echo $protocol->upload($info);
+        echo $protocol->upload();
         echo "\n";
         fgets(STDIN);
     }
@@ -70,7 +70,7 @@ class Command
                 echo "username or password error\n";
             }
         }
-        return $check['sid'];
+        return true;
     }
 
     /**

@@ -10,8 +10,7 @@ docup 文档上传工具
     ========================
     current directory is E:\apidoc\test, upload? [Y/N]
     Y
-    {"code":1,"msg":"success","project":"role","url":"http:\/\/www.example
-    .com\/huchao\/role"}
+    {"code":1,"msg":"success","project":"role","url":"http:\/\/www.example.com\/huchao\/role"}
 
 ## 安装 ##
 

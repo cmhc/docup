@@ -49,8 +49,19 @@ class User
         //验证信息
         $check =json_decode(@file_get_contents($this->server . '/login.php?sid=' . $info), true);
         if ($check['code'] == 1) {
-            return $info;
+            return true;
         }
         return false;
+    }
+
+    /**
+     * 获取sid
+     */
+    public function getSid()
+    {
+        if (!file_exists(__DIR__ . '/.sid')) {
+            return false;
+        }
+        return file_get_contents(__DIR__ . '/.sid');
     }
 }
