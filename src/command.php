@@ -14,10 +14,11 @@ class Command
 {
     public function main()
     {
-        $this->project = new \docup\Project();
-
         $this->welcome();
-        if (!($info = $this->isLogin())) {
+        $this->project = new \docup\Project();
+        $this->setServer();
+        $this->user = new \docup\User();
+        if (!($info = $this->user->isLogin())) {
             $info = $this->login();
         }
         $this->upload($info);
@@ -30,7 +31,7 @@ class Command
     public function upload($info)
     {
         $this->setProject();
-        echo "current directory is " . getcwd() . ", upload? [Y/N]\n";
+        echo "Current directory is " . getcwd() . ", upload? [Y/N]\n";
         $check = strtolower(trim(fgets(STDIN)));
         if ($check == 'n') {
             return false;
@@ -54,22 +55,19 @@ class Command
             $this->register();
         }
 
-        $retry = true;
-        while ($retry) {
+        $success = false;
+        while (!$success) {
             echo "== Login ==\n";
             echo "username:";
             $username = strtolower(trim(fgets(STDIN)));
             echo "password:";
             $password = strtolower(trim(fgets(STDIN)));
-            $password = md5($password);
-            $check =json_decode(@file_get_contents("http://doc.staff.ifeng.com/login.php?username={$username}&password={$password}"), true);
-            if ($check['code'] == 1) {
-                file_put_contents(__DIR__ . '/.sid', $check['sid']);
+            $success = $this->user->login($username, $password);
+
+            if ($success) {
                 echo "login success\n";
-                $retry = false;
             } else {
                 echo "username or password error\n";
-                $retry = true;
             }
         }
         return $check['sid'];
@@ -80,39 +78,19 @@ class Command
      */
     public function register()
     {
-        $retry = true;
-        while ($retry) {
+        $success = false;
+        while (!$success) {
             echo "username:";
             $username = strtolower(trim(fgets(STDIN)));
             echo "password:";
             $password = strtolower(trim(fgets(STDIN)));
-            $password = md5($password);
-            $check =json_decode(@file_get_contents("http://doc.staff.ifeng.com/register.php?username={$username}&password={$password}"), true);
-            if ($check['code'] == 1) {
+            $success = $this->user->register($username, $password);           
+            if ($success) {
                 echo "register success\n";
-                $retry = false;
             } else {
                 echo "username error\n";
-                $retry = true;
             }
         }
-    }
-
-    /**
-     * 本地存储的小文件，判断是否登录
-     */
-    public function isLogin()
-    {
-        if (!file_exists(__DIR__ . '/.sid')) {
-            return false;
-        }
-        $info = file_get_contents(__DIR__ . '/.sid');
-        //验证信息
-        $check =json_decode(file_get_contents('http://doc.staff.ifeng.com/login.php?sid='.$info), true);
-        if ($check['code'] == 1) {
-            return $info;
-        }
-        return false;
     }
 
     /**
@@ -123,9 +101,25 @@ class Command
         if ($this->project->getProjectName()) {
             return true;
         }
-        echo "project name:";
-        $projectName = fgets(STDIN);
-        $this->project->initLocal($projectName);
+        $success = false;
+        while (!$success) {
+            echo "Project name: ";
+            $projectName = fgets(STDIN);
+            $success = $this->project->initLocal($projectName);
+        }
+    }
+
+    /**
+     * 设置文档托管服务器
+     */
+    public function setServer()
+    {
+        if ($this->project->getServer()) {
+            return true;
+        }
+        echo "Server address: ";
+        $serverAddress = fgets(STDIN);
+        $this->project->setServer($serverAddress);
     }
 
     public function welcome()

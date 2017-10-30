@@ -1,0 +1,22 @@
+{
+    "name": "cmhc/docup",
+    "description": "document upload client",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "huchao",
+            "email": "hu_chao@139.com"
+        }
+    ],
+    "require": {
+        
+        },
+    "bin": ["bin/docup.php", "bin/docup"],
+    "bin-dir": "bin",
+    "autoload":{
+        "psr-4": {
+            "docup\\": "src/"
+        }
+    }
+
+}

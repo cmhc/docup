@@ -20,15 +20,6 @@ namespace docup;
 
 class Protocol
 {
-    protected function addUser()
-    {
-        
-    }
-
-    protected function addProject()
-    {
-        
-    }
 
     /**
      * 上传压缩包，以二进制的方式上传
@@ -43,6 +34,9 @@ class Protocol
         if (!file_exists($zipFile)) {
             return  "Zip file create failed\n";
         }
+        if (filesize($zipFile) > 1024*1024*8) {
+            return "Zip file is too large\n";
+        }
         $bin = file_get_contents($zipFile);
         $len = strlen($bin);
         $context = stream_context_create(array(
@@ -53,7 +47,7 @@ class Protocol
                 )
             ));
         $project = new \docup\Project();
-        $api = sprintf("http://doc.staff.ifeng.com/docup.php?sid=%s&project=%s", $user, $project->getProjectName());
+        $api = sprintf(trim($project->getServer(), '/') . '/docup.php?sid=%s&project=%s', $user, $project->getProjectName());
         $res =  file_get_contents($api, null, $context);
         //清理文件
         @unlink($zipFile);

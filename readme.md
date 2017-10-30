@@ -15,10 +15,15 @@ docup 文档上传工具
 
 ## 使用方法 ##
 
-首先需要将docup目录添加到环境变量中，
+## 添加环境变量 ##
 
-在windows系统是电脑（计算机）-属性->高级系统设置->高级->环境变量->系统环境变量, 编辑系统变量中的path, 假设docup的目录为 E:\docup, 将这个目录追加到path值后面即可(需要用;分开)。
-linux系统需要修改 /etc/profile 文件
+首先需要将docup目录添加到环境变量中，在windows系统是电脑（计算机）-属性->高级系统设置->高级->环境变量->系统环境变量, 编辑系统变量中的path, 假设docup的目录为 E:\docup, 将这个目录追加到path值后面即可(需要用;分开)。
+
+linux系统需要修改 /etc/profile，打开此文件，在最下一行加入(假设docup的目录为/data/htdocs/docup)
+
+    export PATH=$PATH:/data/htdocs/docup
+
+linux系统还可以使用符号链接
 
 在命令行下进入所需要上传的目录，比如 `E:\xampp\htdocs\newComment\trunk\02src\apidoc\role` 输入`docup` 。
 第一次使用的时候会提示是reg or up，此时需要输入reg注册一个用户
