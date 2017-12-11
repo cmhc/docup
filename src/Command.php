@@ -1,11 +1,5 @@
 <?php
 /**
- * 命令行
- * 双击进入控制台，读取同文件夹下面的用户信息，如果没有会提示输入
- * username:
- * password:
- * 执行登录操作，生成信息
- * 
  * 
  */
 namespace docup;
@@ -15,8 +9,10 @@ class Command
     public function main()
     {
         $this->welcome();
-        $this->project = new \docup\Project();
-        $this->setServer();
+        if (!$this->checkProjectConfig()) {
+            return false;
+        }
+
         $this->user = new \docup\User();
         if (!($this->user->isLogin())) {
             $this->login();
@@ -30,7 +26,6 @@ class Command
      */
     public function upload()
     {
-        $this->setProject();
         echo "Current directory is " . getcwd() . ", upload? [Y/N]\n";
         $check = strtolower(trim(fgets(STDIN)));
         if ($check == 'n') {
@@ -93,35 +88,31 @@ class Command
         }
     }
 
-    /**
-     * 设置项目
-     */
-    public function setProject()
-    {
-        if ($this->project->getProjectName()) {
-            return true;
-        }
-        $success = false;
-        while (!$success) {
-            echo "Project name: ";
-            $projectName = fgets(STDIN);
-            $success = $this->project->initLocal($projectName);
-        }
-    }
 
     /**
      * 设置文档托管服务器
      */
-    public function setServer()
+    public function checkProjectConfig()
     {
-        if ($this->project->getServer()) {
-            return true;
+        $this->project = new \docup\Project();
+        if (!$this->project->initProject()) {
+            echo "Please create docup.json file in your document root directory\n";
+            return false;
         }
-        echo "Server address: ";
-        $serverAddress = fgets(STDIN);
-        $this->project->setServer($serverAddress);
+        if (!$this->project->getServer()) {
+            echo "server field not found in docup.json file\n";
+            return false;
+        }
+        if (!$this->project->getProject()) {
+            echo "name field not found in docup.json file\n";
+            return false;
+        }
+        return true;
     }
 
+    /**
+     * welcome message
+     */
     public function welcome()
     {
         echo "document uploader v0.1.0\n";

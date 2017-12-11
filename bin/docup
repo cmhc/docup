@@ -1,5 +1,14 @@
 #!/usr/bin/env php
 <?php
-require dirname(dirname(dirname(__DIR__))) . '/autoload.php';
+$autoloadFile = array(
+	dirname(dirname(dirname(__DIR__))) . '/autoload.php',
+	dirname(__DIR__) . '/vendor/autoload.php',
+);
+foreach ($autoloadFile as $file) {
+	if (file_exists($file)) {
+		require $file;
+		break;
+	}
+}
 $command = new \docup\Command();
 $command->main();

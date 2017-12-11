@@ -14,7 +14,6 @@
  *     description: 描述
  * }
  * 
- * 所有的数据存储到sqlite中，注册之后就拥有了对这个文件夹的读写权限
  */
 namespace docup;
 
@@ -49,7 +48,8 @@ class Protocol
         $project = new \docup\Project();
         $user = new \docup\User();
         $sid = $user->getSid();
-        $api = sprintf(trim($project->getServer(), '/') . '/docup.php?sid=%s&project=%s', $sid, $project->getProjectName());
+        $project->initProject();
+        $api = sprintf(trim($project->getServer(), '/') . '/docup.php?sid=%s&project=%s', $sid, $project->getProject());
         $res =  file_get_contents($api, null, $context);
         //清理文件
         @unlink($zipFile);

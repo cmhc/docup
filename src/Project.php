@@ -2,39 +2,50 @@
 namespace docup;
 class Project
 {
-    public function initLocal($name)
-    {
-        $name = trim($name);
-        if (!$name) {
-            return false;
-        }
-        return file_put_contents(getcwd() . '/.project', trim($name));
-    }
-
-    public function setServer($name)
-    {
-        return file_put_contents(getcwd() . '/.server', trim($name));
-    }
-
     /**
-     * 获取项目名称
+     * project json file contents
+     * @var array
      */
-    public function getProjectName()
+    protected $project;
+
+    /**
+     * read project info from docup.json file
+     * @return boolean return false when docup.json file not exists
+     */
+    public function initProject()
     {
-        if (!file_exists(getcwd() . '/.project')) {
+        if (!file_exists(getcwd() . '/docup.json')) {
             return false;
         }
-        return file_get_contents(getcwd() . '/.project');
+        $this->project = json_decode(file_get_contents(getcwd() . '/docup.json'), true);
+        return true;
     }
 
     /**
-     * 获取服务器地址
+     * return project name
+     */
+    public function getProject()
+    {
+        if (!$this->project) {
+            $this->initProject();
+        }
+        if (isset($this->project['name'])) {
+            return $this->project['name'];
+        }
+        return false;
+    }
+
+    /**
+     * return server address
      */
     public function getServer()
     {
-        if (!file_exists(getcwd() . '/.server')) {
-            return false;
+        if (!$this->project) {
+            $this->initProject();
         }
-        return file_get_contents(getcwd() . '/.server');
+        if (isset($this->project['server'])) {
+            return $this->project['server'];
+        }
+        return false;
     }
 }
